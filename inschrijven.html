@@ -21,18 +21,15 @@
 <div class="stadion-hero">
   <img class="nac-logo" src="nac-logo.png" width="120" height="120" alt="NAC Breda embleem">
   <h1>NAC Breda Vak-G pool Oosterhout Editie</h1>
-  <p>Vul hieronder je voorspellingen in voor seizoen 2026/2027 &mdash; wij zien je op de tribune! 🟡⚫</p>
+  <p>Vul hieronder je voorspellingen in voor seizoen 2026/2027! 💛🖤</p>
 </div>
 
 <main>
   <div id="melding-gebied"></div>
 
-  <div class="kaart">
+  <div class="kaart" style="margin-top: 28px;">
     <label class="veld-label" for="naam">Jouw naam *</label>
     <input type="text" id="naam" required placeholder="Voor- en achternaam">
-    <br><br>
-    <label class="veld-label" for="email">E-mailadres (optioneel, voor eventuele vragen)</label>
-    <input type="email" id="email" placeholder="naam@voorbeeld.nl">
   </div>
 
   <div class="kaart">
@@ -124,7 +121,6 @@ function renderBonusvragen() {
 
 function verzamelData() {
   const naam = document.getElementById('naam').value.trim();
-  const email = document.getElementById('email').value.trim();
 
   const voorspellingen = {};
   let compleet = !!naam;
@@ -152,7 +148,6 @@ function verzamelData() {
     compleet: compleet,
     data: {
       naam: naam,
-      email: email,
       ingevuld_op: new Date().toISOString(),
       voorspellingen: voorspellingen,
       bonusantwoorden: bonusantwoorden,
