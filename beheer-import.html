@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beheer: importeren - NAC Breda Vak-G pool Oosterhout Editie</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="nac-header">
+  <div class="nac-titelgroep">
+    <img class="nac-logo" src="nac-logo.png" width="42" height="42" alt="NAC Breda embleem">
+    <h1>Beheer: inschrijvingen importeren</h1>
+  </div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="stand.html">Tussenstand</a>
+  </nav>
+</header>
+<main>
+  <div class="kaart">
+    <p>Dit is het beheertool om alle ontvangen voorspellingsbestanden (van
+    <code>inschrijven.html</code>) samen te voegen tot één <code>inschrijvingen.json</code>.
+    Deze upload je daarna naar <code>inschrijvingen.json</code> op de website.</p>
+    <ol>
+      <li>(Optioneel) Laad de huidige <code>inschrijvingen.json</code> in om aan te vullen.</li>
+      <li>Selecteer alle nieuwe <code>*-voorspelling.json</code> bestanden die je van deelnemers hebt ontvangen.</li>
+      <li>Controleer de lijst en download het samengevoegde bestand.</li>
+    </ol>
+  </div>
+
+  <div class="kaart">
+    <label class="veld-label">1. Bestaande inschrijvingen.json (optioneel)</label>
+    <input type="file" id="bestaand-bestand" accept="application/json">
+  </div>
+
+  <div class="kaart">
+    <label class="veld-label">2. Nieuwe voorspellingsbestanden van deelnemers</label>
+    <input type="file" id="nieuwe-bestanden" accept="application/json" multiple>
+  </div>
+
+  <div id="melding-gebied"></div>
+
+  <div class="kaart">
+    <h2>Geladen deelnemers</h2>
+    <div class="tabel-wrap">
+      <table id="deelnemers-tabel">
+        <thead><tr><th>Naam</th><th>E-mail</th><th>Ingevuld op</th><th>Actie</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="kaart" style="text-align:center;">
+    <button id="download-knop">Download samengevoegde inschrijvingen.json</button>
+  </div>
+</main>
+<footer>NAC Breda Vak-G pool Oosterhout Editie &middot; seizoen 2026/2027</footer>
+
+<script>
+let deelnemers = {}; // naam -> inschrijving object
+
+function toonMelding(tekst, type) {
+  document.getElementById('melding-gebied').innerHTML =
+    '<div class="melding ' + (type || '') + '">' + tekst + '</div>';
+}
+
+function renderTabel() {
+  const tbody = document.querySelector('#deelnemers-tabel tbody');
+  tbody.innerHTML = '';
+  Object.keys(deelnemers).sort().forEach(function (naam) {
+    const d = deelnemers[naam];
+    const tr = document.createElement('tr');
+    tr.innerHTML =
+      '<td>' + d.naam + '</td>' +
+      '<td>' + (d.email || '-') + '</td>' +
+      '<td>' + (d.ingevuld_op ? new Date(d.ingevuld_op).toLocaleString('nl-NL') : '-') + '</td>' +
+      '<td><button class="secundair" data-verwijder="' + naam + '">Verwijder</button></td>';
+    tbody.appendChild(tr);
+  });
+  document.querySelectorAll('[data-verwijder]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      delete deelnemers[btn.getAttribute('data-verwijder')];
+      renderTabel();
+    });
+  });
+}
+
+function voegInschrijvingToe(inschrijving, bron) {
+  if (!inschrijving || !inschrijving.naam || !inschrijving.voorspellingen) {
+    toonMelding('Bestand "' + bron + '" heeft niet het juiste formaat en is overgeslagen.', 'fout');
+    return;
+  }
+  const key = inschrijving.naam.trim().toLowerCase();
+  if (deelnemers[key]) {
+    toonMelding(
+      'Let op: "' + inschrijving.naam + '" was al geladen en is overschreven met de nieuwste inzending (' + bron + ').',
+      'fout'
+    );
+  }
+  deelnemers[key] = inschrijving;
+  renderTabel();
+}
+
+document.getElementById('bestaand-bestand').addEventListener('change', function (e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function () {
+    try {
+      const lijst = JSON.parse(reader.result);
+      if (!Array.isArray(lijst)) throw new Error('geen lijst');
+      lijst.forEach(function (item) { voegInschrijvingToe(item, file.name); });
+      toonMelding(lijst.length + ' bestaande inschrijving(en) geladen uit ' + file.name + '.', 'ok');
+    } catch (err) {
+      toonMelding('Kon ' + file.name + ' niet lezen als inschrijvingen.json.', 'fout');
+    }
+  };
+  reader.readAsText(file);
+});
+
+document.getElementById('nieuwe-bestanden').addEventListener('change', function (e) {
+  const files = Array.from(e.target.files);
+  files.forEach(function (file) {
+    const reader = new FileReader();
+    reader.onload = function () {
+      try {
+        const inschrijving = JSON.parse(reader.result);
+        voegInschrijvingToe(inschrijving, file.name);
+      } catch (err) {
+        toonMelding('Kon ' + file.name + ' niet lezen als voorspellingsbestand.', 'fout');
+      }
+    };
+    reader.readAsText(file);
+  });
+});
+
+document.getElementById('download-knop').addEventListener('click', function () {
+  const lijst = Object.keys(deelnemers).sort().map(function (k) { return deelnemers[k]; });
+  if (lijst.length === 0) {
+    toonMelding('Er zijn nog geen deelnemers geladen.', 'fout');
+    return;
+  }
+  const json = JSON.stringify(lijst, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'inschrijvingen.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toonMelding(
+    lijst.length + ' deelnemer(s) samengevoegd naar inschrijvingen.json. Upload dit bestand op ' +
+    'GitHub ter vervanging van het huidige inschrijvingen.json.',
+    'ok'
+  );
+});
+</script>
+</body>
+</html>
