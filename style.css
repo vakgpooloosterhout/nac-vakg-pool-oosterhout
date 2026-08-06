@@ -75,22 +75,22 @@ header.nac-header nav a:hover {
     radial-gradient(ellipse 50% 75% at 82% 0%, rgba(255,212,0,0.55), transparent 55%),
     radial-gradient(ellipse 40% 60% at 50% -10%, rgba(255,255,255,0.25), transparent 60%),
     linear-gradient(180deg, #050505 0%, #161616 50%, #0d0d0d 100%);
-  padding: 56px 20px 34px;
+  padding: 56px 20px 440px;
   text-align: center;
   color: #fff;
 }
 
 .stadion-hero::before {
-  /* zwak stippenpatroon = suggestie van een volle tribune */
+  /* echte foto van de supporters, volledig in beeld (geen crop) zodat alle gezichten en de
+     vlag zichtbaar blijven; de ruimte ernaast/erboven vult vanzelf met de donkere achtergrond. */
   content: "";
   position: absolute;
   left: 0; right: 0; bottom: 14px;
-  height: 42%;
-  background-image:
-    radial-gradient(circle at 8px 6px, rgba(255,255,255,0.10) 2.4px, transparent 3.4px),
-    radial-gradient(circle at 22px 12px, rgba(255,255,255,0.08) 2.4px, transparent 3.4px),
-    radial-gradient(circle at 36px 4px, rgba(255,255,255,0.09) 2.4px, transparent 3.4px);
-  background-size: 46px 22px;
+  height: 420px;
+  background-image: url('vakg-foto.jpg');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
   pointer-events: none;
 }
 
