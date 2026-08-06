@@ -1,0 +1,283 @@
+:root {
+  --nac-geel: #ffd400;
+  --nac-zwart: #111111;
+  --nac-grijs: #f4f4f4;
+  --nac-rand: #dddddd;
+  --goed: #2e7d32;
+  --fout: #c62828;
+  --radius: 10px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  background: var(--nac-grijs);
+  color: var(--nac-zwart);
+  line-height: 1.4;
+}
+
+header.nac-header {
+  background:
+    radial-gradient(ellipse 55% 90% at 12% -20%, rgba(255,212,0,0.30), transparent 60%),
+    radial-gradient(ellipse 55% 90% at 88% -20%, rgba(255,212,0,0.30), transparent 60%),
+    linear-gradient(180deg, #0c0c0c 0%, #1c1c1c 100%);
+  color: var(--nac-geel);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  border-bottom: 3px solid var(--nac-geel);
+}
+
+header.nac-header .nac-titelgroep {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+header.nac-header h1 {
+  margin: 0;
+  font-size: 1.3rem;
+  letter-spacing: 0.5px;
+}
+
+header.nac-header nav a {
+  color: var(--nac-geel);
+  text-decoration: none;
+  margin-left: 16px;
+  font-weight: 600;
+  border-bottom: 2px solid transparent;
+}
+
+header.nac-header nav a:hover {
+  border-bottom-color: var(--nac-geel);
+}
+
+.nac-logo {
+  flex-shrink: 0;
+  display: block;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.45);
+}
+
+/* Sfeervolle "stadion bij avond" achtergrond, volledig met CSS opgebouwd (geen externe
+   afbeeldingen nodig, dus altijd snel en betrouwbaar zichtbaar). */
+.stadion-hero {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 50% 75% at 18% 0%, rgba(255,212,0,0.55), transparent 55%),
+    radial-gradient(ellipse 50% 75% at 82% 0%, rgba(255,212,0,0.55), transparent 55%),
+    radial-gradient(ellipse 40% 60% at 50% -10%, rgba(255,255,255,0.25), transparent 60%),
+    linear-gradient(180deg, #050505 0%, #161616 50%, #0d0d0d 100%);
+  padding: 56px 20px 34px;
+  text-align: center;
+  color: #fff;
+}
+
+.stadion-hero::before {
+  /* zwak stippenpatroon = suggestie van een volle tribune */
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 14px;
+  height: 42%;
+  background-image:
+    radial-gradient(circle at 8px 6px, rgba(255,255,255,0.10) 2.4px, transparent 3.4px),
+    radial-gradient(circle at 22px 12px, rgba(255,255,255,0.08) 2.4px, transparent 3.4px),
+    radial-gradient(circle at 36px 4px, rgba(255,255,255,0.09) 2.4px, transparent 3.4px);
+  background-size: 46px 22px;
+  pointer-events: none;
+}
+
+.stadion-hero::after {
+  /* grasstrepen onderaan = suggestie van het speelveld */
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 14px;
+  background: repeating-linear-gradient(90deg, #1f6e2c 0 40px, #17561f 40px 80px);
+}
+
+.stadion-hero .nac-logo { margin: 0 auto 14px; }
+
+.stadion-hero h1 {
+  margin: 0 0 6px;
+  font-size: 2rem;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.6);
+}
+
+.stadion-hero p {
+  margin: 0;
+  color: #f2f2f2;
+  font-size: 1.02rem;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.6);
+  position: relative;
+  z-index: 1;
+}
+
+main {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 24px 16px 60px;
+}
+
+h2 {
+  border-left: 6px solid var(--nac-geel);
+  padding-left: 10px;
+}
+
+.kaart {
+  background: white;
+  border: 1px solid var(--nac-rand);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  margin-bottom: 18px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.wedstrijd-rij {
+  display: grid;
+  grid-template-columns: 2fr 128px 55px 14px 55px;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--nac-rand);
+}
+
+.wedstrijd-rij select {
+  width: 100%;
+  padding: 8px 4px;
+  border: 1px solid var(--nac-rand);
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+
+.wedstrijd-rij:last-child { border-bottom: none; }
+
+.wedstrijd-teams { font-weight: 600; }
+.wedstrijd-datum { font-size: 0.8rem; color: #666; }
+
+input[type="number"], input[type="text"], input[type="email"] {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid var(--nac-rand);
+  border-radius: 6px;
+  font-size: 1rem;
+  text-align: center;
+}
+
+label.veld-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.bonus-rij {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--nac-rand);
+}
+
+.bonus-rij:last-child { border-bottom: none; }
+.bonus-rij .vraag { flex: 1; }
+.bonus-rij .vraag .pt { color: #888; font-size: 0.85rem; }
+.bonus-rij input { max-width: 220px; }
+
+button, .knop {
+  background: var(--nac-geel);
+  color: var(--nac-zwart);
+  border: none;
+  padding: 12px 22px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  display: inline-block;
+  text-decoration: none;
+}
+
+button:hover, .knop:hover { filter: brightness(0.95); }
+
+button.secundair {
+  background: white;
+  border: 2px solid var(--nac-zwart);
+  color: var(--nac-zwart);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+table th, table td {
+  border: 1px solid var(--nac-rand);
+  padding: 8px 10px;
+  text-align: center;
+  font-size: 0.92rem;
+}
+
+table th {
+  background: var(--nac-zwart);
+  color: var(--nac-geel);
+}
+
+table tbody tr:nth-child(odd) { background: #fafafa; }
+
+.tabel-wrap { overflow-x: auto; }
+
+.rang-1 { background: #fff6cc !important; font-weight: 700; }
+
+.punten-goed { color: var(--goed); font-weight: 700; }
+.punten-fout { color: var(--fout); }
+
+.melding {
+  background: #fff3cd;
+  border: 1px solid #ffe08a;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.melding.fout {
+  background: #fdecea;
+  border-color: #f5c2c0;
+}
+
+.melding.ok {
+  background: #e8f5e9;
+  border-color: #c8e6c9;
+}
+
+footer {
+  text-align: center;
+  color: #888;
+  font-size: 0.85rem;
+  padding: 20px;
+}
+
+.landing-links {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.landing-links a.kaart {
+  text-decoration: none;
+  color: var(--nac-zwart);
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  padding: 30px 16px;
+}
+
+.landing-links a.kaart:hover { border-color: var(--nac-geel); }

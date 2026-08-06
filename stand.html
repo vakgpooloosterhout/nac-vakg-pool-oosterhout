@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tussenstand - NAC Breda Vak-G pool Oosterhout Editie</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="nac-header">
+  <div class="nac-titelgroep">
+    <img class="nac-logo" src="images/nac-logo.png" width="42" height="42" alt="NAC Breda embleem">
+    <h1>Tussenstand</h1>
+  </div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="inschrijven.html">Inschrijven</a>
+  </nav>
+</header>
+<main>
+  <div id="melding-gebied"></div>
+
+  <div id="lokaal-laden" class="kaart" style="display:none;">
+    <p>De inschrijvingen konden niet automatisch geladen worden (dit gebeurt als je deze pagina
+    rechtstreeks als bestand opent, zonder webserver). Laad <code>data/inschrijvingen.json</code>
+    hieronder handmatig in:</p>
+    <label class="veld-label">inschrijvingen.json</label>
+    <input type="file" id="file-inschrijvingen" accept="application/json">
+  </div>
+
+  <div class="kaart">
+    <h2>Klassement</h2>
+    <div class="tabel-wrap">
+      <table id="klassement-tabel">
+        <thead>
+          <tr><th>#</th><th>Naam</th><th>Wedstrijdpunten</th><th>Bonuspunten</th><th>Totaal</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="kaart">
+    <h2>Voorspellingen per wedstrijd</h2>
+    <label class="veld-label" for="wedstrijd-select">Kies een wedstrijd</label>
+    <select id="wedstrijd-select"></select>
+    <div id="wedstrijd-resultaat" style="margin-top:10px;"></div>
+    <div class="tabel-wrap">
+      <table id="wedstrijd-tabel">
+        <thead><tr><th>Naam</th><th>Toto</th><th>Score</th><th>Punten</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="kaart">
+    <h2>Bonusvragen per deelnemer</h2>
+    <div class="tabel-wrap">
+      <table id="bonus-tabel"></table>
+    </div>
+  </div>
+</main>
+<footer>NAC Breda Vak-G pool Oosterhout Editie &middot; seizoen 2026/2027</footer>
+
+<script src="js/scoring.js"></script>
+<script>
+// Wedstrijden en bonusvragen staan hieronder ingebouwd, zodat deze pagina ook werkt als hij
+// rechtstreeks als bestand wordt geopend. Bij een wekelijkse uitslagupdate wordt dit blok
+// vervangen door een nieuwe versie van deze pagina.
+const wedstrijden = [{"id": 1, "speeldag": 1, "datum": "2026-08-07", "thuis": "TOP Oss", "uit": "NAC Breda", "gespeeld": false, "score_thuis": null, "score_uit": null}, {"id": 2, "speeldag": 2, "datum": "2026-08-14", "thuis": "NAC Breda", "uit": "VVV-Venlo", "gespeeld": false, "score_thuis": null, "score_uit": null}, {"id": 3, "speeldag": 3, "datum": "2026-08-22", "thuis": "NAC Breda", "uit": "Jong Ajax", "gespeeld": false, "score_thuis": null, "score_uit": null}, {"id": 4, "speeldag": 4, "datum": "2026-08-28", "thuis": "Roda JC", "uit": "NAC Breda", "gespeeld": false, "score_thuis": null, "score_uit": null}, {"id": 5, "speeldag": 5, "datum": "2026-09-04", "thuis": "RKC Waalwijk", "uit": "NAC Breda", "gespeeld": false, "score_thuis": null, "score_uit": null}, {"id": 6, "speeldag": 6, "datum": "2026-09-11", "thuis": "NAC Breda", "uit": "Jong FC Utrecht", "gespeeld": false, "score_thuis": null, "score_uit": null}, {"id": 7, "speeldag": 7, "datum": "2026-09-20", "thuis": "De Graafschap", "uit": "NAC Breda", "gespeeld": false, "score_thuis": null, "score_uit": null}, {"id": 8, "speeldag": 8, "datum": "2026-09-26", "thuis": "NAC Breda", "uit": "FC Eindhoven", "gespeeld": false, "score_thuis": null, "score_uit": null}, {"id": 9, "speeldag": 9, "datum": "2026-10-03", "thuis": "Vitesse", "uit": "NAC Breda", "gespeeld": false, "score_thuis": null, "score_uit": null}, {"id": 10, "speeldag": 10, "datum": "2026-10-09", "thuis": "NAC Breda", "uit": "MVV Maastricht", "gespeeld": false, "score_thuis": null, "score_uit": null}, {"id": 11, "speeldag": 11, "datum": "2026-10-16", "thuis": "Helmond Sport", "uit": "NAC Breda", "gespeeld": false, "score_thuis": null, "score_uit": null}, {"id": 12, "speeldag": 12, "datum": "2026-10-23", "thuis": "NAC Breda", "uit": "Heracles Almelo", "gespeeld": false, "score_thuis": null, "score_uit": null}, {"id": 13, "speeldag": 13, "datum": "2026-11-02", "thuis": "Jong PSV", "uit": "NAC Breda", "gespeeld": false, "score_thuis": null, "score_uit": null}, {"id": 14, "speeldag": 14, "datum": "2026-11-06", "thuis": "FC Dordrecht", "uit": "NAC Breda", "gespeeld": false, "score_thuis": null, "score_uit": null}, {"id": 15, "speeldag": 15, "datum": "2026-11-14", "thuis": "NAC Breda", "uit": "FC Emmen", "gespeeld": false, "score_thuis": null, "score_uit": null}, {"id": 16, "speeldag": 16, "datum": "2026-11-20", "thuis": "Almere City", "uit": "NAC Breda", "gespeeld": false, "score_thuis": null, "score_uit": null}, {"id": 17, "speeldag": 17, "datum": "2026-11-27", "thuis": "NAC Breda", "uit": "FC Den Bosch", "gespeeld": false, "score_thuis": null, "score_uit": null}, {"id": 18, "speeldag": 18, "datum": "2026-12-06", "thuis": "NAC Breda", "uit": "FC Volendam", "gespeeld": false, "score_thuis": null, "score_uit": null}, {"id": 19, "speeldag": 19, "datum": "2026-12-11", "thuis": "Jong AZ", "uit": "NAC Breda", "gespeeld": false, "score_thuis": null, "score_uit": null}, {"id": 20, "speeldag": 20, "datum": "2026-12-18", "thuis": "NAC Breda", "uit": "Roda JC", "gespeeld": false, "score_thuis": null, "score_uit": null}, {"id": 21, "speeldag": 21, "datum": "2027-01-10", "thuis": "Heracles Almelo", "uit": "NAC Breda", "gespeeld": false, "score_thuis": null, "score_uit": null}, {"id": 22, "speeldag": 22, "datum": "2027-01-15", "thuis": "NAC Breda", "uit": "Jong PSV", "gespeeld": false, "score_thuis": null, "score_uit": null}, {"id": 23, "speeldag": 23, "datum": "2027-01-22", "thuis": "FC Emmen", "uit": "NAC Breda", "gespeeld": false, "score_thuis": null, "score_uit": null}, {"id": 24, "speeldag": 24, "datum": "2027-01-29", "thuis": "NAC Breda", "uit": "TOP Oss", "gespeeld": false, "score_thuis": null, "score_uit": null}, {"id": 25, "speeldag": 25, "datum": "2027-02-08", "thuis": "Jong Ajax", "uit": "NAC Breda", "gespeeld": false, "score_thuis": null, "score_uit": null}, {"id": 26, "speeldag": 26, "datum": "2027-02-12", "thuis": "NAC Breda", "uit": "FC Dordrecht", "gespeeld": false, "score_thuis": null, "score_uit": null}, {"id": 27, "speeldag": 27, "datum": "2027-02-19", "thuis": "FC Volendam", "uit": "NAC Breda", "gespeeld": false, "score_thuis": null, "score_uit": null}, {"id": 28, "speeldag": 28, "datum": "2027-02-26", "thuis": "NAC Breda", "uit": "Vitesse", "gespeeld": false, "score_thuis": null, "score_uit": null}, {"id": 29, "speeldag": 29, "datum": "2027-03-05", "thuis": "NAC Breda", "uit": "Helmond Sport", "gespeeld": false, "score_thuis": null, "score_uit": null}, {"id": 30, "speeldag": 30, "datum": "2027-03-15", "thuis": "Jong FC Utrecht", "uit": "NAC Breda", "gespeeld": false, "score_thuis": null, "score_uit": null}, {"id": 31, "speeldag": 31, "datum": "2027-03-19", "thuis": "NAC Breda", "uit": "Jong AZ", "gespeeld": false, "score_thuis": null, "score_uit": null}, {"id": 32, "speeldag": 32, "datum": "2027-04-02", "thuis": "VVV-Venlo", "uit": "NAC Breda", "gespeeld": false, "score_thuis": null, "score_uit": null}, {"id": 33, "speeldag": 33, "datum": "2027-04-09", "thuis": "FC Den Bosch", "uit": "NAC Breda", "gespeeld": false, "score_thuis": null, "score_uit": null}, {"id": 34, "speeldag": 34, "datum": "2027-04-16", "thuis": "NAC Breda", "uit": "Almere City", "gespeeld": false, "score_thuis": null, "score_uit": null}, {"id": 35, "speeldag": 35, "datum": "2027-04-23", "thuis": "MVV Maastricht", "uit": "NAC Breda", "gespeeld": false, "score_thuis": null, "score_uit": null}, {"id": 36, "speeldag": 36, "datum": "2027-04-30", "thuis": "NAC Breda", "uit": "RKC Waalwijk", "gespeeld": false, "score_thuis": null, "score_uit": null}, {"id": 37, "speeldag": 37, "datum": "2027-05-07", "thuis": "FC Eindhoven", "uit": "NAC Breda", "gespeeld": false, "score_thuis": null, "score_uit": null}, {"id": 38, "speeldag": 38, "datum": "2027-05-14", "thuis": "NAC Breda", "uit": "De Graafschap", "gespeeld": false, "score_thuis": null, "score_uit": null}];
+
+const bonusvragen = [{"id": "eindplaats_nac", "vraag": "Op welke plaats eindigt NAC?", "punten": 3, "type": "getal", "juist_antwoord": null}, {"id": "goals_nac_voor", "vraag": "Aantal goals NAC voor", "punten": 4, "type": "getal", "juist_antwoord": null}, {"id": "goals_nac_tegen", "vraag": "Aantal goals NAC tegen", "punten": 4, "type": "getal", "juist_antwoord": null}, {"id": "punten_nac", "vraag": "Aantal punten NAC", "punten": 5, "type": "getal", "juist_antwoord": null}, {"id": "topscorer_nac", "vraag": "Topscorer NAC", "punten": 3, "type": "tekst", "juist_antwoord": null}, {"id": "topscorer_eredivisie", "vraag": "Topscorer Eredivisie", "punten": 2, "type": "tekst", "juist_antwoord": null}, {"id": "topscorer_eerste_divisie", "vraag": "Topscorer Eerste Divisie", "punten": 2, "type": "tekst", "juist_antwoord": null}, {"id": "kampioen_eredivisie", "vraag": "Kampioen Eredivisie", "punten": 2, "type": "tekst", "juist_antwoord": null}, {"id": "kampioen_eerste_divisie", "vraag": "Kampioen Eerste Divisie", "punten": 2, "type": "tekst", "juist_antwoord": null}, {"id": "winnaar_knvb_beker", "vraag": "Winnaar KNVB Beker", "punten": 2, "type": "tekst", "juist_antwoord": null}, {"id": "degradant_eredivisie_1", "vraag": "Directe degradant Eredivisie (1)", "punten": 2, "type": "tekst", "juist_antwoord": null}, {"id": "degradant_eredivisie_2", "vraag": "Directe degradant Eredivisie (2)", "punten": 2, "type": "tekst", "juist_antwoord": null}, {"id": "kampioen_duitsland", "vraag": "Kampioen Duitsland", "punten": 2, "type": "tekst", "juist_antwoord": null}, {"id": "kampioen_engeland", "vraag": "Kampioen Engeland", "punten": 2, "type": "tekst", "juist_antwoord": null}, {"id": "winnaar_fa_cup", "vraag": "Winnaar FA Cup", "punten": 2, "type": "tekst", "juist_antwoord": null}, {"id": "kampioen_frankrijk", "vraag": "Kampioen Frankrijk", "punten": 2, "type": "tekst", "juist_antwoord": null}, {"id": "kampioen_italie", "vraag": "Kampioen Italie", "punten": 2, "type": "tekst", "juist_antwoord": null}, {"id": "kampioen_schotland", "vraag": "Kampioen Schotland", "punten": 2, "type": "tekst", "juist_antwoord": null}, {"id": "kampioen_spanje", "vraag": "Kampioen Spanje", "punten": 2, "type": "tekst", "juist_antwoord": null}, {"id": "kampioen_portugal", "vraag": "Kampioen Portugal", "punten": 2, "type": "tekst", "juist_antwoord": null}, {"id": "kampioen_belgie", "vraag": "Kampioen België", "punten": 2, "type": "tekst", "juist_antwoord": null}, {"id": "winnaar_champions_league", "vraag": "Winnaar Champions League", "punten": 2, "type": "tekst", "juist_antwoord": null}, {"id": "winnaar_europa_league", "vraag": "Winnaar Europa League", "punten": 2, "type": "tekst", "juist_antwoord": null}];
+
+let inschrijvingen = [];
+
+function toonMelding(tekst, type) {
+  document.getElementById('melding-gebied').innerHTML =
+    '<div class="melding ' + (type || '') + '">' + tekst + '</div>';
+}
+
+function initialiseer() {
+  renderKlassement();
+  renderWedstrijdSelect();
+  renderBonusTabel();
+}
+
+function renderKlassement() {
+  const tbody = document.querySelector('#klassement-tabel tbody');
+  tbody.innerHTML = '';
+  const stand = berekenTussenstand(inschrijvingen, wedstrijden, bonusvragen);
+  if (stand.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5">Nog geen inschrijvingen geladen.</td></tr>';
+    return;
+  }
+  stand.forEach(function (r, i) {
+    const tr = document.createElement('tr');
+    if (i === 0) tr.className = 'rang-1';
+    tr.innerHTML =
+      '<td>' + (i + 1) + '</td>' +
+      '<td>' + r.naam + '</td>' +
+      '<td>' + r.totaalWedstrijden + '</td>' +
+      '<td>' + r.totaalBonus + '</td>' +
+      '<td><strong>' + r.totaal + '</strong></td>';
+    tbody.appendChild(tr);
+  });
+}
+
+function formatteerDatum(iso) {
+  const d = new Date(iso + 'T12:00:00');
+  return d.toLocaleDateString('nl-NL', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+function renderWedstrijdSelect() {
+  const select = document.getElementById('wedstrijd-select');
+  select.innerHTML = '';
+  wedstrijden.forEach(function (w) {
+    const optie = document.createElement('option');
+    optie.value = w.id;
+    optie.textContent = 'Sd. ' + w.speeldag + ': ' + w.thuis + ' - ' + w.uit + ' (' + formatteerDatum(w.datum) + ')';
+    select.appendChild(optie);
+  });
+  select.addEventListener('change', function () { renderWedstrijdTabel(Number(select.value)); });
+  if (wedstrijden.length > 0) renderWedstrijdTabel(wedstrijden[0].id);
+}
+
+function renderWedstrijdTabel(wedstrijdId) {
+  const wedstrijd = wedstrijden.find(function (w) { return w.id === wedstrijdId; });
+  const infoGebied = document.getElementById('wedstrijd-resultaat');
+  const tbody = document.querySelector('#wedstrijd-tabel tbody');
+  tbody.innerHTML = '';
+
+  if (!wedstrijd) return;
+
+  infoGebied.textContent = wedstrijd.gespeeld
+    ? 'Uitslag: ' + wedstrijd.thuis + ' ' + wedstrijd.score_thuis + ' - ' + wedstrijd.score_uit + ' ' + wedstrijd.uit
+    : 'Nog niet gespeeld.';
+
+  if (inschrijvingen.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4">Nog geen inschrijvingen geladen.</td></tr>';
+    return;
+  }
+
+  const TOTO_LABELS = { '1': '1 (' + wedstrijd.thuis + ')', '2': '2 (' + wedstrijd.uit + ')', '3': '3 (gelijk)' };
+
+  inschrijvingen.forEach(function (insch) {
+    const voorspelling = (insch.voorspellingen || {})[wedstrijdId];
+    const tr = document.createElement('tr');
+    if (!voorspelling) {
+      tr.innerHTML = '<td>' + insch.naam + '</td><td>-</td><td>-</td><td>-</td>';
+      tbody.appendChild(tr);
+      return;
+    }
+    const resultaat = berekenWedstrijdPunten(voorspelling, wedstrijd);
+    const totoWaarde =
+      voorspelling.toto !== undefined && voorspelling.toto !== null && voorspelling.toto !== ''
+        ? String(voorspelling.toto)
+        : bepaalUitslagType(voorspelling.score_thuis, voorspelling.score_uit);
+    const totoLabel = TOTO_LABELS[totoWaarde] || totoWaarde;
+    const totoClass = resultaat.gespeeld ? (resultaat.totoGoed ? 'punten-goed' : 'punten-fout') : '';
+    const scoreClass = resultaat.gespeeld ? (resultaat.exactGoed ? 'punten-goed' : 'punten-fout') : '';
+    const puntenClass = resultaat.gespeeld ? (resultaat.punten > 0 ? 'punten-goed' : 'punten-fout') : '';
+    tr.innerHTML =
+      '<td>' + insch.naam + '</td>' +
+      '<td class="' + totoClass + '">' + totoLabel + '</td>' +
+      '<td class="' + scoreClass + '">' + voorspelling.score_thuis + ' - ' + voorspelling.score_uit + '</td>' +
+      '<td class="' + puntenClass + '">' + (resultaat.gespeeld ? resultaat.punten : '-') + '</td>';
+    tbody.appendChild(tr);
+  });
+}
+
+function renderBonusTabel() {
+  const tabel = document.getElementById('bonus-tabel');
+  if (bonusvragen.length === 0 || inschrijvingen.length === 0) {
+    tabel.innerHTML = '<tr><td>Nog geen bonusvragen of inschrijvingen geladen.</td></tr>';
+    return;
+  }
+  let html = '<thead><tr><th>Naam</th>';
+  bonusvragen.forEach(function (v) { html += '<th>' + v.vraag + '<br><span style="color:#ccc;">(' + v.punten + ' pt.)</span></th>'; });
+  html += '</tr></thead><tbody>';
+  inschrijvingen.forEach(function (insch) {
+    html += '<tr><td>' + insch.naam + '</td>';
+    bonusvragen.forEach(function (v) {
+      const antwoord = (insch.bonusantwoorden || {})[v.id] || '-';
+      const resultaat = berekenBonusPunten(antwoord, v);
+      const cel = resultaat.bekend
+        ? '<span class="' + (resultaat.goed ? 'punten-goed' : 'punten-fout') + '">' + antwoord + '</span>'
+        : antwoord;
+      html += '<td>' + cel + '</td>';
+    });
+    html += '</tr>';
+  });
+  html += '</tbody>';
+  tabel.innerHTML = html;
+}
+
+function laadVanFetch() {
+  fetch('data/inschrijvingen.json', { cache: 'no-store' })
+    .then(function (r) { if (!r.ok) throw new Error(); return r.json(); })
+    .then(function (data) {
+      inschrijvingen = data;
+      initialiseer();
+    })
+    .catch(function () {
+      document.getElementById('lokaal-laden').style.display = 'block';
+      toonMelding(
+        'Kon data/inschrijvingen.json niet automatisch laden (waarschijnlijk omdat deze pagina ' +
+        'lokaal als bestand is geopend, of omdat het bestand nog niet naast deze pagina staat). ' +
+        'Laad het hieronder handmatig in, of zet de site online.',
+        'fout'
+      );
+      initialiseer();
+    });
+}
+
+function koppelHandmatigLaden() {
+  document.getElementById('file-inschrijvingen').addEventListener('change', function (e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function () {
+      try {
+        inschrijvingen = JSON.parse(reader.result);
+        initialiseer();
+        toonMelding('Inschrijvingen geladen uit ' + file.name + '.', 'ok');
+      } catch (err) {
+        toonMelding('Kon ' + file.name + ' niet lezen.', 'fout');
+      }
+    };
+    reader.readAsText(file);
+  });
+}
+
+koppelHandmatigLaden();
+laadVanFetch();
+</script>
+</body>
+</html>
